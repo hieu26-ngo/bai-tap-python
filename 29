@@ -1,0 +1,30 @@
+class Solution:
+    def divide(self, dividend, divisor):
+        INT_MAX = 2**31 - 1
+        INT_MIN = -2**31
+
+        # overflow case
+        if dividend == INT_MIN and divisor == -1:
+            return INT_MAX
+
+        # xử lý dấu
+        sign = -1 if (dividend < 0) ^ (divisor < 0) else 1
+
+        dvd = abs(dividend)
+        dvs = abs(divisor)
+
+        result = 0
+
+        while dvd >= dvs:
+            temp = dvs
+            multiple = 1
+
+            while dvd >= (temp << 1):
+                temp <<= 1
+                multiple <<= 1
+
+            dvd -= temp
+            result += multiple
+
+        return sign * result
+        
