@@ -1,0 +1,18 @@
+class Solution:
+    def isValid(self, s):
+        stack = []
+        mapping = {
+            ')': '(',
+            '}': '{',
+            ']': '['
+        }
+
+        for char in s:
+            if char in mapping:  # là dấu đóng
+                if not stack or stack[-1] != mapping[char]:
+                    return False
+                stack.pop()
+            else:  # là dấu mở
+                stack.append(char)
+
+        return len(stack) == 0
