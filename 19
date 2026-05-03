@@ -1,0 +1,21 @@
+class Solution:
+    def removeNthFromEnd(self, head, n):
+        dummy = ListNode(0)
+        dummy.next = head
+
+        fast = dummy
+        slow = dummy
+
+        # bước 1: tạo khoảng cách n+1
+        for _ in range(n + 1):
+            fast = fast.next
+
+        # bước 2: di chuyển cùng lúc
+        while fast:
+            fast = fast.next
+            slow = slow.next
+
+        # bước 3: xóa node
+        slow.next = slow.next.next
+
+        return dummy.next
