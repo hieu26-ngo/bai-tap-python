@@ -1,0 +1,20 @@
+class Solution:
+    def myPow(self, x, n):
+        # xử lý số mũ âm
+        if n < 0:
+            x = 1 / x
+            n = -n
+
+        result = 1
+
+        while n > 0:
+            # nếu n lẻ → nhân thêm x
+            if n % 2 == 1:
+                result *= x
+
+            # bình phương x
+            x *= x
+            n //= 2
+
+        return result
+        
