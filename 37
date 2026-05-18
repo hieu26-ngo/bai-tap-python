@@ -1,0 +1,77 @@
+class Solution:
+    def solveSudoku(self, board):
+        rows = [0] * 9
+        cols = [0] * 9
+        boxes = [0] * 9
+        empty = []
+
+        # init
+        for i in range(9):
+            for j in range(9):
+                if board[i][j] == '.':
+                    empty.append((i, j))
+                else:
+                    num = int(board[i][j]) - 1
+                    mask = 1 << num
+                    rows[i] |= mask
+                    cols[j] |= mask
+                    boxes[(i//3)*3 + j//3] |= mask
+
+        def get_choices(i, j):
+            box = (i//3)*3 + j//3
+            used = rows[i] | cols[j] | boxes[box]
+            return (~used) & 0x1FF  # chỉ 9 bit
+
+        def backtrack():
+            if not empty:
+                return True
+
+            # 🔥 chọn ô có ít lựa chọn nhất (MRV)
+            min_idx = -1
+            min_mask = 0
+            min_count = 10
+
+            for idx in range(len(empty)):
+                i, j = empty[idx]
+                mask = get_choices(i, j)
+                count = bin(mask).count("1")
+
+                if count < min_count:
+                    min_count = count
+                    min_mask = mask
+                    min_idx = idx
+
+                if count == 1:  # tối ưu thêm
+                    break
+
+            # swap
+            empty[0], empty[min_idx] = empty[min_idx], empty[0]
+            i, j = empty.pop(0)
+            box = (i//3)*3 + j//3
+
+            mask = min_mask
+            while mask:
+                bit = mask & -mask  # lấy bit thấp nhất
+                num = (bit.bit_length() - 1)
+
+                # đặt số
+                board[i][j] = str(num + 1)
+                rows[i] |= bit
+                cols[j] |= bit
+                boxes[box] |= bit
+
+                if backtrack():
+                    return True
+
+                # backtrack
+                board[i][j] = '.'
+                rows[i] ^= bit
+                cols[j] ^= bit
+                boxes[box] ^= bit
+
+                mask ^= bit  # remove bit
+
+            empty.insert(0, (i, j))
+            return False
+
+        backtrack()
