@@ -1,0 +1,11 @@
+class Solution:
+    def groupAnagrams(self, strs):
+        from collections import defaultdict
+        
+        res = defaultdict(list)
+
+        for s in strs:
+            key = ''.join(sorted(s))  # sort string
+            res[key].append(s)
+
+        return list(res.values())
